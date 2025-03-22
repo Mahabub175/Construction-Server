@@ -18,7 +18,7 @@ const createUserService = async (userData: TUser) => {
 
 const loginUserService = async (userData: any) => {
   const query = {
-    $or: [{ number: userData.emailNumber }],
+    $or: [{ number: userData.emailNumber }, { email: userData.emailNumber }],
   };
 
   const user = await userModel

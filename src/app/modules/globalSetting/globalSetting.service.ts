@@ -19,26 +19,6 @@ const getAllGlobalSettingService = async () => {
 
   results = await globalSettingModel
     .find()
-    .populate({
-      path: "sectionOneCategories.categories",
-      model: "category",
-    })
-    .populate({
-      path: "sectionTwoCategories.categories",
-      model: "category",
-    })
-    .populate({
-      path: "sectionThreeCategories.categories",
-      model: "category",
-    })
-    .populate({
-      path: "sectionFourCategories.categories",
-      model: "category",
-    })
-    .populate({
-      path: "sectionFiveCategories.categories",
-      model: "category",
-    })
     .exec();
 
   results = formatResultImage(results, "logo");
