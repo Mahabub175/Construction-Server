@@ -6,6 +6,7 @@ import { globalSettingRoutes } from "../modules/globalSetting/globalSetting.rout
 import { sliderRoutes } from "../modules/slider/slider.route";
 import { newsletterRoutes } from "../modules/newsletter/newsletter.route";
 import { blogRoutes } from "../modules/blog/blog.route";
+import { serviceRoutes } from "../modules/service/service.route";
 
 const router = Router();
 
@@ -16,6 +17,7 @@ const routes = [
   sliderRoutes,
   newsletterRoutes,
   blogRoutes,
+  serviceRoutes,
 ];
 
 routes.forEach((route) => {
