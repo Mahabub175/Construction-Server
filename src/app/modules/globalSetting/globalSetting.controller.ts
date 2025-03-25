@@ -15,11 +15,25 @@ const createGlobalSettingController = async (
 
     const logoFile = files?.logo?.[0];
     const faviconFile = files?.favicon?.[0];
+    const aboutBannerFile = files?.aboutBanner?.[0];
+    const serviceBannerFile = files?.serviceBanner?.[0];
+    const workBannerFile = files?.workBanner?.[0];
+    const galleryBannerFile = files?.galleryBanner?.[0];
+    const shopBannerFile = files?.shopBanner?.[0];
+    const contactBannerFile = files?.contactBanner?.[0];
+    const blogBannerFile = files?.blogBanner?.[0];
 
     const formData = {
       ...data,
       logo: logoFile?.path,
       favicon: faviconFile?.path,
+      aboutBanner: aboutBannerFile?.path,
+      serviceBanner: serviceBannerFile?.path,
+      workBanner: workBannerFile?.path,
+      galleryBanner: galleryBannerFile?.path,
+      shopBanner: shopBannerFile?.path,
+      contactBanner: contactBannerFile?.path,
+      blogBanner: blogBannerFile?.path,
     };
 
     const result = await globalSettingServices.createGlobalSettingService(
@@ -70,11 +84,25 @@ const updateSingleGlobalSettingController = async (
 
     const logoFilePath = files?.logo?.[0]?.path;
     const faviconFilePath = files?.favicon?.[0]?.path;
+    const aboutBannerFile = files?.aboutBanner?.[0];
+    const serviceBannerFile = files?.serviceBanner?.[0];
+    const workBannerFile = files?.workBanner?.[0];
+    const galleryBannerFile = files?.galleryBanner?.[0];
+    const shopBannerFile = files?.shopBanner?.[0];
+    const contactBannerFile = files?.contactBanner?.[0];
+    const blogBannerFile = files?.blogBanner?.[0];
 
     const globalSettingData = {
       ...data,
       logo: logoFilePath,
       favicon: faviconFilePath,
+      aboutBanner: aboutBannerFile?.path,
+      serviceBanner: serviceBannerFile?.path,
+      workBanner: workBannerFile?.path,
+      galleryBanner: galleryBannerFile?.path,
+      shopBanner: shopBannerFile?.path,
+      contactBanner: contactBannerFile?.path,
+      blogBanner: blogBannerFile?.path,
     };
 
     const result = await globalSettingServices.updateSingleGlobalSettingService(

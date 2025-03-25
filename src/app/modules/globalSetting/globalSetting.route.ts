@@ -9,6 +9,13 @@ router.post(
   uploadService.fields([
     { name: "logo", maxCount: 1 },
     { name: "favicon", maxCount: 1 },
+    { name: "aboutBanner", maxCount: 1 },
+    { name: "serviceBanner", maxCount: 1 },
+    { name: "workBanner", maxCount: 1 },
+    { name: "galleryBanner", maxCount: 1 },
+    { name: "shopBanner", maxCount: 1 },
+    { name: "contactBanner", maxCount: 1 },
+    { name: "blogBanner", maxCount: 1 },
   ]),
   globalSettingControllers.createGlobalSettingController
 );
@@ -23,6 +30,13 @@ router.patch(
   uploadService.fields([
     { name: "logo", maxCount: 1 },
     { name: "favicon", maxCount: 1 },
+    { name: "aboutBanner", maxCount: 1 },
+    { name: "serviceBanner", maxCount: 1 },
+    { name: "workBanner", maxCount: 1 },
+    { name: "galleryBanner", maxCount: 1 },
+    { name: "shopBanner", maxCount: 1 },
+    { name: "contactBanner", maxCount: 1 },
+    { name: "blogBanner", maxCount: 1 },
   ]),
   globalSettingControllers.updateSingleGlobalSettingController
 );

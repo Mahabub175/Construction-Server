@@ -17,6 +17,13 @@ export interface IGlobalSetting {
   secondaryColor: string;
   logo: string;
   favicon: string;
+  aboutBanner: string;
+  serviceBanner: string;
+  workBanner: string;
+  galleryBanner: string;
+  shopBanner: string;
+  contactBanner: string;
+  blogBanner: string;
   currency: string;
   ssl: boolean;
   status: boolean;

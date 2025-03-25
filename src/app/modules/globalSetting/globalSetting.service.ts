@@ -17,12 +17,17 @@ const createGlobalSettingService = async (
 const getAllGlobalSettingService = async () => {
   let results;
 
-  results = await globalSettingModel
-    .find()
-    .exec();
+  results = await globalSettingModel.find().exec();
 
   results = formatResultImage(results, "logo");
   results = formatResultImage(results, "favicon");
+  results = formatResultImage(results, "aboutBanner");
+  results = formatResultImage(results, "serviceBanner");
+  results = formatResultImage(results, "workBanner");
+  results = formatResultImage(results, "galleryBanner");
+  results = formatResultImage(results, "shopBanner");
+  results = formatResultImage(results, "contactBanner");
+  results = formatResultImage(results, "blogBanner");
 
   return {
     result: results[0] || null,
