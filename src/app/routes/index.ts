@@ -9,6 +9,7 @@ import { blogRoutes } from "../modules/blog/blog.route";
 import { serviceRoutes } from "../modules/service/service.route";
 import { workRoutes } from "../modules/work/work.route";
 import { galleryRoutes } from "../modules/gallery/gallery.route";
+import { shopRoutes } from "../modules/shop/shop.route";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ const routes = [
   serviceRoutes,
   workRoutes,
   galleryRoutes,
+  shopRoutes,
 ];
 
 routes.forEach((route) => {
