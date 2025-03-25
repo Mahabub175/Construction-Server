@@ -8,6 +8,7 @@ import { newsletterRoutes } from "../modules/newsletter/newsletter.route";
 import { blogRoutes } from "../modules/blog/blog.route";
 import { serviceRoutes } from "../modules/service/service.route";
 import { workRoutes } from "../modules/work/work.route";
+import { galleryRoutes } from "../modules/gallery/gallery.route";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ const routes = [
   blogRoutes,
   serviceRoutes,
   workRoutes,
+  galleryRoutes,
 ];
 
 routes.forEach((route) => {

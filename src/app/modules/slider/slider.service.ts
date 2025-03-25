@@ -5,8 +5,8 @@ import { sliderModel } from "./slider.model";
 import { ISlider } from "./slider.interface";
 
 //Create a Slider into database
-const createSliderService = async (SliderData: ISlider, filePath?: string) => {
-  const dataToSave = { ...SliderData, filePath };
+const createSliderService = async (sliderData: ISlider, filePath?: string) => {
+  const dataToSave = { ...sliderData, filePath };
   const result = await sliderModel.create(dataToSave);
   return result;
 };
@@ -48,11 +48,11 @@ const getAllSliderService = async (
 };
 
 // Get single Slider
-const getSingleSliderService = async (SliderId: number | string) => {
+const getSingleSliderService = async (sliderId: number | string) => {
   const queryId =
-    typeof SliderId === "string"
-      ? new mongoose.Types.ObjectId(SliderId)
-      : SliderId;
+    typeof sliderId === "string"
+      ? new mongoose.Types.ObjectId(sliderId)
+      : sliderId;
 
   const result = await sliderModel.findById(queryId).exec();
   if (!result) {
@@ -71,18 +71,18 @@ const getSingleSliderService = async (SliderId: number | string) => {
 
 //Update single Slider
 const updateSingleSliderService = async (
-  SliderId: string | number,
-  SliderData: ISlider
+  sliderId: string | number,
+  sliderData: ISlider
 ) => {
   const queryId =
-    typeof SliderId === "string"
-      ? new mongoose.Types.ObjectId(SliderId)
-      : SliderId;
+    typeof sliderId === "string"
+      ? new mongoose.Types.ObjectId(sliderId)
+      : sliderId;
 
   const result = await sliderModel
     .findByIdAndUpdate(
       queryId,
-      { $set: SliderData },
+      { $set: sliderData },
       { new: true, runValidators: true }
     )
     .exec();
@@ -95,11 +95,11 @@ const updateSingleSliderService = async (
 };
 
 //Delete single Slider
-const deleteSingleSliderService = async (SliderId: string | number) => {
+const deleteSingleSliderService = async (sliderId: string | number) => {
   const queryId =
-    typeof SliderId === "string"
-      ? new mongoose.Types.ObjectId(SliderId)
-      : SliderId;
+    typeof sliderId === "string"
+      ? new mongoose.Types.ObjectId(sliderId)
+      : sliderId;
 
   const result = await sliderModel.findByIdAndDelete(queryId).exec();
 
@@ -111,8 +111,8 @@ const deleteSingleSliderService = async (SliderId: string | number) => {
 };
 
 //Delete many Slider
-const deleteManySlidersService = async (SliderIds: (string | number)[]) => {
-  const queryIds = SliderIds.map((id) => {
+const deleteManySlidersService = async (sliderIds: (string | number)[]) => {
+  const queryIds = sliderIds.map((id) => {
     if (typeof id === "string" && mongoose.Types.ObjectId.isValid(id)) {
       return new mongoose.Types.ObjectId(id);
     } else if (typeof id === "number") {

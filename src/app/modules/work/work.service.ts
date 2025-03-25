@@ -106,10 +106,18 @@ const getSingleWorkBySlugService = async (workSlug: string) => {
   }
 
   if (typeof result.mainImage === "string") {
-    const formattedAttachment = formatResultImage<IWork>(result.mainImage);
-    if (typeof formattedAttachment === "string") {
-      result.mainImage = formattedAttachment;
-    }
+    result.mainImage = `${config.base_url}/${result.mainImage.replace(
+      /\\/g,
+      "/"
+    )}`;
+  }
+
+  if (Array.isArray(result.images)) {
+    result.images = result.images.map((image) =>
+      typeof image === "string"
+        ? `${config.base_url}/${image.replace(/\\/g, "/")}`
+        : image
+    );
   }
 
   return result;
