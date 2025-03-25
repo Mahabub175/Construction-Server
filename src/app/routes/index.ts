@@ -10,6 +10,7 @@ import { serviceRoutes } from "../modules/service/service.route";
 import { workRoutes } from "../modules/work/work.route";
 import { galleryRoutes } from "../modules/gallery/gallery.route";
 import { shopRoutes } from "../modules/shop/shop.route";
+import { dashboardRoutes } from "../modules/dashboard/dashboard.route";
 
 const router = Router();
 
@@ -24,6 +25,7 @@ const routes = [
   workRoutes,
   galleryRoutes,
   shopRoutes,
+  dashboardRoutes,
 ];
 
 routes.forEach((route) => {
