@@ -3,6 +3,8 @@ import { paginateAndSort } from "../../utils/paginateAndSort";
 import { formatResultImage } from "../../utils/formatResultImage";
 import { sliderModel } from "./slider.model";
 import { ISlider } from "./slider.interface";
+import path from "path";
+import fs from "fs";
 
 //Create a Slider into database
 const createSliderService = async (sliderData: ISlider, filePath?: string) => {
@@ -79,6 +81,29 @@ const updateSingleSliderService = async (
       ? new mongoose.Types.ObjectId(sliderId)
       : sliderId;
 
+  const slider = await sliderModel.findById(queryId).exec();
+
+  if (!slider) {
+    throw new Error("Slider not found");
+  }
+
+  if (sliderData.attachment && slider.attachment !== sliderData.attachment) {
+    const prevFileName = path.basename(slider.attachment);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous attachment for slider ${slider._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous attachment not found for slider ${slider._id}`);
+    }
+  }
+
   const result = await sliderModel
     .findByIdAndUpdate(
       queryId,
@@ -88,7 +113,7 @@ const updateSingleSliderService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Slider not found");
+    throw new Error("Slider update failed");
   }
 
   return result;
@@ -101,11 +126,28 @@ const deleteSingleSliderService = async (sliderId: string | number) => {
       ? new mongoose.Types.ObjectId(sliderId)
       : sliderId;
 
-  const result = await sliderModel.findByIdAndDelete(queryId).exec();
+  const slider = await sliderModel.findById(queryId).exec();
 
-  if (!result) {
+  if (!slider) {
     throw new Error("Slider not found");
   }
+
+  if (slider.attachment) {
+    const fileName = path.basename(slider.attachment);
+    const attachmentPath = path.join(process.cwd(), "uploads", fileName);
+
+    if (fs.existsSync(attachmentPath)) {
+      try {
+        fs.unlinkSync(attachmentPath);
+      } catch (err) {
+        throw new Error("Failed to delete attachment file");
+      }
+    } else {
+      throw new Error("Attachment file not found on server");
+    }
+  }
+
+  const result = await sliderModel.findByIdAndDelete(queryId).exec();
 
   return result;
 };
@@ -122,10 +164,28 @@ const deleteManySlidersService = async (sliderIds: (string | number)[]) => {
     }
   });
 
+  const sliders = await sliderModel.find({ _id: { $in: queryIds } });
+
+  for (const slider of sliders) {
+    if (slider.attachment) {
+      const fileName = path.basename(slider.attachment);
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn(`Failed to delete attachment for slider ${slider._id}`);
+        }
+      } else {
+        console.warn(`Attachment not found for slider ${slider._id}`);
+      }
+    }
+  }
+
   const result = await sliderModel
     .deleteMany({ _id: { $in: queryIds } })
     .exec();
-
   return result;
 };
 

@@ -10,6 +10,8 @@ import { sendEmail } from "../../utils/sendEmail";
 import { createToken } from "./auth.utils";
 import { TUser } from "./user.interface";
 import { userModel } from "./user.model";
+import path from "path";
+import fs from "fs";
 
 const createUserService = async (userData: TUser) => {
   const result = await userModel.create(userData);
@@ -84,7 +86,6 @@ const changeUserPasswordService = async (
   try {
     session.startTransaction();
 
-    // Ensure the new password is not the same as the current password
     const isSameAsCurrent = await compareHashPassword(
       userData.new_password,
       user.password
@@ -111,10 +112,8 @@ const changeUserPasswordService = async (
       }
     }
 
-    // Hash the new password
     const hashedPassword = await hashPassword(userData.new_password);
 
-    // If there are more than 2 previous passwords, remove the oldest one
     if (previousPasswords.length >= 2) {
       await userModel.findByIdAndUpdate(
         userId,
@@ -127,7 +126,6 @@ const changeUserPasswordService = async (
       );
     }
 
-    // Update the user password and add the new password to previous passwords
     await userModel.findByIdAndUpdate(
       userId,
       {
@@ -142,11 +140,9 @@ const changeUserPasswordService = async (
       { session }
     );
 
-    // Commit the transaction
     await session.commitTransaction();
     await session.endSession();
 
-    // Return the updated user
     return await userModel.findById(userId);
   } catch (error: any) {
     await session.abortTransaction();
@@ -191,7 +187,6 @@ const resetPasswordService = async (
   payload: { email: string; new_password: string },
   token: string
 ) => {
-  // checking if the user is exist
   const query = { email: payload.email };
 
   const user = await userModel.findOne(query);
@@ -301,7 +296,6 @@ const updateUserStatusService = async (
   const queryId =
     typeof userId === "string" ? new mongoose.Types.ObjectId(userId) : userId;
 
-  // Check if the user exists
   const userExists = await userModel.exists({ _id: queryId });
   if (!userExists) {
     throw new Error("User not found");
@@ -326,6 +320,29 @@ const updateSingleUserService = async (
 ) => {
   const queryId =
     typeof userId === "string" ? new mongoose.Types.ObjectId(userId) : userId;
+
+  const user = await userModel.findById(queryId).exec();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (userData.profile_image && user.profile_image !== userData.profile_image) {
+    const prevFileName = path.basename(user.profile_image);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous profile_image for user ${user._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous profile_image not found for user ${user._id}`);
+    }
+  }
 
   const result = await userModel
     .findByIdAndUpdate(

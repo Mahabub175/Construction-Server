@@ -4,6 +4,8 @@ import { formatResultImage } from "../../utils/formatResultImage";
 import { IBlog } from "./blog.interface";
 import { blogModel } from "./blog.model";
 import { generateSlug } from "../../utils/generateSlug";
+import path from "path";
+import fs from "fs";
 
 //Create a blog into database
 const createBlogService = async (blogData: IBlog, filePath?: string) => {
@@ -94,6 +96,29 @@ const updateSingleBlogService = async (
   const queryId =
     typeof blogId === "string" ? new mongoose.Types.ObjectId(blogId) : blogId;
 
+  const blog = await blogModel.findById(queryId).exec();
+
+  if (!blog) {
+    throw new Error("Blog not found");
+  }
+
+  if (blogData.attachment && blog.attachment !== blogData.attachment) {
+    const prevFileName = path.basename(blog.attachment);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous attachment for blog ${blog._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous attachment not found for blog ${blog._id}`);
+    }
+  }
+
   const result = await blogModel
     .findByIdAndUpdate(
       queryId,
@@ -103,7 +128,7 @@ const updateSingleBlogService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Blog not found");
+    throw new Error("Blog update failed");
   }
 
   return result;
@@ -114,10 +139,31 @@ const deleteSingleBlogService = async (blogId: string | number) => {
   const queryId =
     typeof blogId === "string" ? new mongoose.Types.ObjectId(blogId) : blogId;
 
+  const blog = await blogModel.findById(queryId).exec();
+
+  if (!blog) {
+    throw new Error("Blog not found");
+  }
+
+  if (blog.attachment) {
+    const fileName = path.basename(blog.attachment);
+    const attachmentPath = path.join(process.cwd(), "uploads", fileName);
+
+    if (fs.existsSync(attachmentPath)) {
+      try {
+        fs.unlinkSync(attachmentPath);
+      } catch (err) {
+        throw new Error("Failed to delete attachment file");
+      }
+    } else {
+      throw new Error("Attachment file not found on server");
+    }
+  }
+
   const result = await blogModel.findByIdAndDelete(queryId).exec();
 
   if (!result) {
-    throw new Error("Blog not found");
+    throw new Error("Blog delete failed");
   }
 
   return result;
@@ -134,6 +180,25 @@ const deleteManyBlogsService = async (blogIds: (string | number)[]) => {
       throw new Error(`Invalid ID format: ${id}`);
     }
   });
+
+  const blogs = await blogModel.find({ _id: { $in: queryIds } });
+
+  for (const blog of blogs) {
+    if (blog.attachment) {
+      const fileName = path.basename(blog.attachment);
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn(`Failed to delete attachment for blog ${blog._id}`);
+        }
+      } else {
+        console.warn(`Attachment not found for blog ${blog._id}`);
+      }
+    }
+  }
 
   const result = await blogModel.deleteMany({ _id: { $in: queryIds } }).exec();
 

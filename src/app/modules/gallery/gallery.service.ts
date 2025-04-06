@@ -3,6 +3,8 @@ import { paginateAndSort } from "../../utils/paginateAndSort";
 import { formatResultImage } from "../../utils/formatResultImage";
 import { galleryModel } from "./gallery.model";
 import { IGallery } from "./gallery.interface";
+import path from "path";
+import fs from "fs";
 
 //Create a Gallery into database
 const createGalleryService = async (
@@ -14,7 +16,7 @@ const createGalleryService = async (
   return result;
 };
 
-// Get all Gallerys withal pagination
+// Get all Galleries withal pagination
 const getAllGalleryService = async (
   page?: number,
   limit?: number,
@@ -82,6 +84,29 @@ const updateSingleGalleryService = async (
       ? new mongoose.Types.ObjectId(galleryId)
       : galleryId;
 
+  const gallery = await galleryModel.findById(queryId).exec();
+
+  if (!gallery) {
+    throw new Error("Gallery not found");
+  }
+
+  if (galleryData.attachment && gallery.attachment !== galleryData.attachment) {
+    const prevFileName = path.basename(gallery.attachment);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous attachment for gallery ${gallery._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous attachment not found for gallery ${gallery._id}`);
+    }
+  }
+
   const result = await galleryModel
     .findByIdAndUpdate(
       queryId,
@@ -91,7 +116,7 @@ const updateSingleGalleryService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Gallery not found");
+    throw new Error("Gallery update failed");
   }
 
   return result;
@@ -104,10 +129,31 @@ const deleteSingleGalleryService = async (galleryId: string | number) => {
       ? new mongoose.Types.ObjectId(galleryId)
       : galleryId;
 
+  const gallery = await galleryModel.findById(queryId).exec();
+
+  if (!gallery) {
+    throw new Error("Gallery not found");
+  }
+
+  if (gallery.attachment) {
+    const fileName = path.basename(gallery.attachment);
+    const attachmentPath = path.join(process.cwd(), "uploads", fileName);
+
+    if (fs.existsSync(attachmentPath)) {
+      try {
+        fs.unlinkSync(attachmentPath);
+      } catch (err) {
+        throw new Error("Failed to delete attachment file");
+      }
+    } else {
+      throw new Error("Attachment file not found on server");
+    }
+  }
+
   const result = await galleryModel.findByIdAndDelete(queryId).exec();
 
   if (!result) {
-    throw new Error("Gallery not found");
+    throw new Error("Gallery delete failed");
   }
 
   return result;
@@ -124,6 +170,27 @@ const deleteManyGalleryService = async (galleryIds: (string | number)[]) => {
       throw new Error(`Invalid ID format: ${id}`);
     }
   });
+
+  const galleries = await galleryModel.find({ _id: { $in: queryIds } });
+
+  for (const gallery of galleries) {
+    if (gallery.attachment) {
+      const fileName = path.basename(gallery.attachment);
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn(
+            `Failed to delete attachment for gallery ${gallery._id}`
+          );
+        }
+      } else {
+        console.warn(`Attachment not found for gallery ${gallery._id}`);
+      }
+    }
+  }
 
   const result = await galleryModel
     .deleteMany({ _id: { $in: queryIds } })

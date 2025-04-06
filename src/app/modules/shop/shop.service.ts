@@ -3,6 +3,8 @@ import { paginateAndSort } from "../../utils/paginateAndSort";
 import { formatResultImage } from "../../utils/formatResultImage";
 import { shopModel } from "./shop.model";
 import { IShop } from "./shop.interface";
+import path from "path";
+import fs from "fs";
 
 //Create a Shop into database
 const createShopService = async (shopData: IShop, filePath?: string) => {
@@ -75,6 +77,29 @@ const updateSingleShopService = async (
   const queryId =
     typeof shopId === "string" ? new mongoose.Types.ObjectId(shopId) : shopId;
 
+  const shop = await shopModel.findById(queryId).exec();
+
+  if (!shop) {
+    throw new Error("Shop not found");
+  }
+
+  if (shopData.attachment && shop.attachment !== shopData.attachment) {
+    const prevFileName = path.basename(shop.attachment);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous attachment for shop ${shop._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous attachment not found for shop ${shop._id}`);
+    }
+  }
+
   const result = await shopModel
     .findByIdAndUpdate(
       queryId,
@@ -84,7 +109,7 @@ const updateSingleShopService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Shop not found");
+    throw new Error("Shop update failed");
   }
 
   return result;
@@ -95,10 +120,31 @@ const deleteSingleShopService = async (shopId: string | number) => {
   const queryId =
     typeof shopId === "string" ? new mongoose.Types.ObjectId(shopId) : shopId;
 
+  const shop = await shopModel.findById(queryId).exec();
+
+  if (!shop) {
+    throw new Error("Shop not found");
+  }
+
+  if (shop.attachment) {
+    const fileName = path.basename(shop.attachment);
+    const attachmentPath = path.join(process.cwd(), "uploads", fileName);
+
+    if (fs.existsSync(attachmentPath)) {
+      try {
+        fs.unlinkSync(attachmentPath);
+      } catch (err) {
+        throw new Error("Failed to delete attachment file");
+      }
+    } else {
+      throw new Error("Attachment file not found on server");
+    }
+  }
+
   const result = await shopModel.findByIdAndDelete(queryId).exec();
 
   if (!result) {
-    throw new Error("Shop not found");
+    throw new Error("Shop delete failed");
   }
 
   return result;
@@ -115,6 +161,25 @@ const deleteManyShopsService = async (shopIds: (string | number)[]) => {
       throw new Error(`Invalid ID format: ${id}`);
     }
   });
+
+  const shops = await shopModel.find({ _id: { $in: queryIds } });
+
+  for (const shop of shops) {
+    if (shop.attachment) {
+      const fileName = path.basename(shop.attachment);
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn(`Failed to delete attachment for shop ${shop._id}`);
+        }
+      } else {
+        console.warn(`Attachment not found for shop ${shop._id}`);
+      }
+    }
+  }
 
   const result = await shopModel.deleteMany({ _id: { $in: queryIds } }).exec();
 

@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { formatResultImage } from "../../utils/formatResultImage";
 import { IGlobalSetting } from "./globalSetting.interface";
 import { globalSettingModel } from "./globalSetting.model";
+import path from "path";
+import fs from "fs";
 
 //Create a globalSetting into database
 const createGlobalSettingService = async (
@@ -44,6 +46,52 @@ const updateSingleGlobalSettingService = async (
       ? new mongoose.Types.ObjectId(globalSettingId)
       : globalSettingId;
 
+  const currentGlobalSetting = await globalSettingModel
+    .findById(queryId)
+    .exec();
+
+  if (!currentGlobalSetting) {
+    throw new Error("Global Setting not found");
+  }
+
+  const globalSetting = currentGlobalSetting as IGlobalSetting;
+
+  const imageFields: (keyof IGlobalSetting)[] = [
+    "logo",
+    "favicon",
+    "aboutBanner",
+    "serviceBanner",
+    "workBanner",
+    "galleryBanner",
+    "shopBanner",
+    "contactBanner",
+    "blogBanner",
+  ];
+
+  imageFields.forEach((field) => {
+    const prevImage = globalSetting[field];
+    const newImage = globalSettingData[field];
+
+    if (
+      typeof prevImage === "string" &&
+      typeof newImage === "string" &&
+      newImage !== prevImage
+    ) {
+      const prevFileName = path.basename(prevImage);
+      const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+      if (fs.existsSync(prevFilePath)) {
+        try {
+          fs.unlinkSync(prevFilePath);
+        } catch (err) {
+          console.warn(`Failed to delete previous image for ${field}`);
+        }
+      } else {
+        console.warn(`Previous image not found for ${field}`);
+      }
+    }
+  });
+
   const result = await globalSettingModel
     .findByIdAndUpdate(
       queryId,
@@ -53,7 +101,7 @@ const updateSingleGlobalSettingService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Global Setting not found");
+    throw new Error("Failed to update global setting");
   }
 
   return result;

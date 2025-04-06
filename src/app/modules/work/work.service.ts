@@ -6,6 +6,8 @@ import { workModel } from "./work.model";
 import { generateSlug } from "../../utils/generateSlug";
 import config from "../../config";
 import appError from "../../errors/appError";
+import path from "path";
+import fs from "fs";
 
 //Create a work into database
 const createWorkService = async (workData: IWork, filePath?: string) => {
@@ -131,6 +133,54 @@ const updateSingleWorkService = async (
   const queryId =
     typeof workId === "string" ? new mongoose.Types.ObjectId(workId) : workId;
 
+  const work = await workModel.findById(queryId).exec();
+
+  if (!work) {
+    throw new Error("Work not found");
+  }
+
+  if (workData.mainImage && work.mainImage !== workData.mainImage) {
+    const prevFileName = path.basename(work.mainImage);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous main image for work ${work._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous main image not found for work ${work._id}`);
+    }
+  }
+
+  if (
+    workData.images &&
+    work.images &&
+    workData.images.length !== work.images.length
+  ) {
+    work.images.forEach((image) => {
+      if (!workData.images.includes(image)) {
+        const prevFileName = path.basename(image);
+        const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+        if (fs.existsSync(prevFilePath)) {
+          try {
+            fs.unlinkSync(prevFilePath);
+          } catch (err) {
+            console.warn(
+              `Failed to delete previous image for work ${work._id}`
+            );
+          }
+        } else {
+          console.warn(`Previous image not found for work ${work._id}`);
+        }
+      }
+    });
+  }
+
   const result = await workModel
     .findByIdAndUpdate(
       queryId,
@@ -140,7 +190,7 @@ const updateSingleWorkService = async (
     .exec();
 
   if (!result) {
-    throw new Error("Work not found");
+    throw new Error("Work update failed");
   }
 
   return result;
@@ -151,10 +201,48 @@ const deleteSingleWorkService = async (workId: string | number) => {
   const queryId =
     typeof workId === "string" ? new mongoose.Types.ObjectId(workId) : workId;
 
+  const work = await workModel.findById(queryId).exec();
+
+  if (!work) {
+    throw new Error("Work not found");
+  }
+
+  if (work.mainImage) {
+    const prevFileName = path.basename(work.mainImage);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(`Failed to delete main image for work ${work._id}`);
+      }
+    } else {
+      console.warn(`Main image not found for work ${work._id}`);
+    }
+  }
+
+  if (work.images && Array.isArray(work.images)) {
+    work.images.forEach((image) => {
+      const prevFileName = path.basename(image);
+      const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+      if (fs.existsSync(prevFilePath)) {
+        try {
+          fs.unlinkSync(prevFilePath);
+        } catch (err) {
+          console.warn(`Failed to delete image for work ${work._id}`);
+        }
+      } else {
+        console.warn(`Image not found for work ${work._id}`);
+      }
+    });
+  }
+
   const result = await workModel.findByIdAndDelete(queryId).exec();
 
   if (!result) {
-    throw new Error("Work not found");
+    throw new Error("Failed to delete work");
   }
 
   return result;
@@ -169,6 +257,46 @@ const deleteManyWorksService = async (workIds: (string | number)[]) => {
       return id;
     } else {
       throw new Error(`Invalid ID format: ${id}`);
+    }
+  });
+
+  const works = await workModel.find({ _id: { $in: queryIds } }).exec();
+
+  if (!works || works.length === 0) {
+    throw new Error("No works found");
+  }
+
+  works.forEach((work) => {
+    if (work.mainImage) {
+      const prevFileName = path.basename(work.mainImage);
+      const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+      if (fs.existsSync(prevFilePath)) {
+        try {
+          fs.unlinkSync(prevFilePath);
+        } catch (err) {
+          console.warn(`Failed to delete main image for work ${work._id}`);
+        }
+      } else {
+        console.warn(`Main image not found for work ${work._id}`);
+      }
+    }
+
+    if (work.images && Array.isArray(work.images)) {
+      work.images.forEach((image) => {
+        const prevFileName = path.basename(image);
+        const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+        if (fs.existsSync(prevFilePath)) {
+          try {
+            fs.unlinkSync(prevFilePath);
+          } catch (err) {
+            console.warn(`Failed to delete image for work ${work._id}`);
+          }
+        } else {
+          console.warn(`Image not found for work ${work._id}`);
+        }
+      });
     }
   });
 

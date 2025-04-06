@@ -3,6 +3,8 @@ import { paginateAndSort } from "../../utils/paginateAndSort";
 import { formatResultImage } from "../../utils/formatResultImage";
 import { IService } from "./service.interface";
 import { serviceModel } from "./service.model";
+import path from "path";
+import fs from "fs";
 
 //Create a service into database
 const createServiceService = async (
@@ -82,6 +84,29 @@ const updateSingleServiceService = async (
       ? new mongoose.Types.ObjectId(serviceId)
       : serviceId;
 
+  const service = await serviceModel.findById(queryId).exec();
+
+  if (!service) {
+    throw new Error("Service not found");
+  }
+
+  if (serviceData.attachment && service.attachment !== serviceData.attachment) {
+    const prevFileName = path.basename(service.attachment);
+    const prevFilePath = path.join(process.cwd(), "uploads", prevFileName);
+
+    if (fs.existsSync(prevFilePath)) {
+      try {
+        fs.unlinkSync(prevFilePath);
+      } catch (err) {
+        console.warn(
+          `Failed to delete previous attachment for service ${service._id}`
+        );
+      }
+    } else {
+      console.warn(`Previous attachment not found for service ${service._id}`);
+    }
+  }
+
   const result = await serviceModel
     .findByIdAndUpdate(
       queryId,
@@ -104,10 +129,31 @@ const deleteSingleServiceService = async (serviceId: string | number) => {
       ? new mongoose.Types.ObjectId(serviceId)
       : serviceId;
 
+  const service = await serviceModel.findById(queryId).exec();
+
+  if (!service) {
+    throw new Error("Service not found");
+  }
+
+  if (service.attachment) {
+    const fileName = path.basename(service.attachment);
+    const attachmentPath = path.join(process.cwd(), "uploads", fileName);
+
+    if (fs.existsSync(attachmentPath)) {
+      try {
+        fs.unlinkSync(attachmentPath);
+      } catch (err) {
+        throw new Error("Failed to delete attachment file");
+      }
+    } else {
+      throw new Error("Attachment file not found on server");
+    }
+  }
+
   const result = await serviceModel.findByIdAndDelete(queryId).exec();
 
   if (!result) {
-    throw new Error("Service not found");
+    throw new Error("Service delete failed");
   }
 
   return result;
@@ -124,6 +170,27 @@ const deleteManyServicesService = async (serviceIds: (string | number)[]) => {
       throw new Error(`Invalid ID format: ${id}`);
     }
   });
+
+  const services = await serviceModel.find({ _id: { $in: queryIds } });
+
+  for (const service of services) {
+    if (service.attachment) {
+      const fileName = path.basename(service.attachment);
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.warn(
+            `Failed to delete attachment for service ${service._id}`
+          );
+        }
+      } else {
+        console.warn(`Attachment not found for service ${service._id}`);
+      }
+    }
+  }
 
   const result = await serviceModel
     .deleteMany({ _id: { $in: queryIds } })
