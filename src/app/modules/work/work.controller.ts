@@ -52,7 +52,7 @@ const getAllWorkController = async (
 
     const searchText = req.query.searchText as string | undefined;
 
-    const searchFields = ["name"];
+    const searchFields = ["name", "description"];
 
     const result = await workServices.getAllWorkService(
       pageNumber,

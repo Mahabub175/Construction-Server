@@ -41,7 +41,7 @@ const getAllShopController = async (
 
     const searchText = req.query.searchText as string | undefined;
 
-    const searchFields = ["rating", "comment"];
+    const searchFields = ["name", "description"];
 
     const result = await shopServices.getAllShopService(
       pageNumber,

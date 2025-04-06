@@ -41,7 +41,7 @@ const getAllSliderController = async (
 
     const searchText = req.query.searchText as string | undefined;
 
-    const searchFields = ["rating", "comment"];
+    const searchFields = ["name"];
 
     const result = await sliderServices.getAllSliderService(
       pageNumber,

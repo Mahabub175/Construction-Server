@@ -112,7 +112,7 @@ const getAllUserController = async (
 
     const searchText = req.query.searchText as string | undefined;
 
-    const searchFields = ["name", "email"];
+    const searchFields = ["name", "email", "number", "role"];
 
     const result = await userServices.getAllUserService(
       page,

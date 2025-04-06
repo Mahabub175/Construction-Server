@@ -41,7 +41,7 @@ const getAllGalleryController = async (
 
     const searchText = req.query.searchText as string | undefined;
 
-    const searchFields = ["rating", "comment"];
+    const searchFields = ["name"];
 
     const result = await galleryServices.getAllGalleryService(
       pageNumber,
@@ -52,7 +52,7 @@ const getAllGalleryController = async (
 
     res.status(200).json({
       success: true,
-      message: "Gallerys Fetched Successfully!",
+      message: "Galleries Fetched Successfully!",
       data: result,
     });
   } catch (error) {
@@ -150,7 +150,7 @@ const deleteManyGalleryController = async (
 
     res.status(200).json({
       success: true,
-      message: `Bulk gallery Delete Successful! Deleted ${result.deletedCount} gallerys.`,
+      message: `Bulk gallery Delete Successful! Deleted ${result.deletedCount} galleries.`,
       data: null,
     });
   } catch (error: any) {
