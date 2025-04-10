@@ -9,20 +9,27 @@ import httpStatus from "http-status";
 
 const app: Application = express();
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (origin) {
-        callback(null, origin);
-      } else {
-        callback(null, "*");
-      }
-    },
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+const allowedOrigins: string[] = [
+  "http://localhost:3000",
+  "https://genesiscarpenter.vercel.app",
+  "https://genesiscarpenter.com",
+];
+
+const corsOptions = {
+  origin: (origin: any, callback: any) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
@@ -32,9 +39,9 @@ if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath);
 }
 
+// API routes
 app.use("/uploads", express.static(uploadsPath));
 
-// API routes
 app.use("/api/v1", router);
 
 app.get("/api/v1", (req: Request, res: Response) => {
