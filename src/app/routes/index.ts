@@ -11,6 +11,7 @@ import { workRoutes } from "../modules/work/work.route";
 import { galleryRoutes } from "../modules/gallery/gallery.route";
 import { shopRoutes } from "../modules/shop/shop.route";
 import { dashboardRoutes } from "../modules/dashboard/dashboard.route";
+import { brandRoutes } from "../modules/brand/brand.route";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ const routes = [
   newsletterRoutes,
   blogRoutes,
   serviceRoutes,
+  brandRoutes,
   workRoutes,
   galleryRoutes,
   shopRoutes,

@@ -20,6 +20,13 @@ export interface IGlobalSetting {
   aboutBanner: string;
   serviceBanner: string;
   workBanner: string;
+  processBanner: string;
+  delivery: string;
+  pickupPoint: string;
+  paymentTerms: string;
+  privacyPolicy: string;
+  refundAndReturns: string;
+  termsAndConditions: string;
   galleryBanner: string;
   shopBanner: string;
   contactBanner: string;
