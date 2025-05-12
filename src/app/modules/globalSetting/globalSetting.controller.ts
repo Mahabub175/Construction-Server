@@ -17,6 +17,7 @@ const createGlobalSettingController = async (
     const faviconFile = files?.favicon?.[0];
     const aboutBannerFile = files?.aboutBanner?.[0];
     const serviceBannerFile = files?.serviceBanner?.[0];
+    const processBannerFile = files?.processBanner?.[0];
     const workBannerFile = files?.workBanner?.[0];
     const galleryBannerFile = files?.galleryBanner?.[0];
     const shopBannerFile = files?.shopBanner?.[0];
@@ -30,6 +31,7 @@ const createGlobalSettingController = async (
       aboutBanner: aboutBannerFile?.path,
       serviceBanner: serviceBannerFile?.path,
       workBanner: workBannerFile?.path,
+      processBanner: processBannerFile?.path,
       galleryBanner: galleryBannerFile?.path,
       shopBanner: shopBannerFile?.path,
       contactBanner: contactBannerFile?.path,
@@ -86,6 +88,7 @@ const updateSingleGlobalSettingController = async (
     const faviconFilePath = files?.favicon?.[0]?.path;
     const aboutBannerFile = files?.aboutBanner?.[0];
     const serviceBannerFile = files?.serviceBanner?.[0];
+    const processBannerFile = files?.processBanner?.[0];
     const workBannerFile = files?.workBanner?.[0];
     const galleryBannerFile = files?.galleryBanner?.[0];
     const shopBannerFile = files?.shopBanner?.[0];
@@ -99,6 +102,7 @@ const updateSingleGlobalSettingController = async (
       aboutBanner: aboutBannerFile?.path,
       serviceBanner: serviceBannerFile?.path,
       workBanner: workBannerFile?.path,
+      processBanner: processBannerFile?.path,
       galleryBanner: galleryBannerFile?.path,
       shopBanner: shopBannerFile?.path,
       contactBanner: contactBannerFile?.path,

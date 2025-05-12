@@ -29,6 +29,7 @@ const getAllGlobalSettingService = async () => {
   results = formatResultImage(results, "galleryBanner");
   results = formatResultImage(results, "shopBanner");
   results = formatResultImage(results, "contactBanner");
+  results = formatResultImage(results, "processBanner");
   results = formatResultImage(results, "blogBanner");
 
   return {
@@ -66,6 +67,7 @@ const updateSingleGlobalSettingService = async (
     "shopBanner",
     "contactBanner",
     "blogBanner",
+    "processBanner",
   ];
 
   imageFields.forEach((field) => {
