@@ -84,6 +84,8 @@ const globalSettingSchema = new Schema<IGlobalSetting>(
     logo: { type: String, default: null, trim: true },
     favicon: { type: String, default: null, trim: true },
     aboutBanner: { type: String, default: null, trim: true },
+    aboutImage1: { type: String, default: null, trim: true },
+    aboutImage2: { type: String, default: null, trim: true },
     serviceBanner: { type: String, default: null, trim: true },
     workBanner: { type: String, default: null, trim: true },
     processBanner: { type: String, default: null, trim: true },

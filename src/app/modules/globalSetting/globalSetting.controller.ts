@@ -16,6 +16,8 @@ const createGlobalSettingController = async (
     const logoFile = files?.logo?.[0];
     const faviconFile = files?.favicon?.[0];
     const aboutBannerFile = files?.aboutBanner?.[0];
+    const aboutImage1File = files?.aboutImage1?.[0];
+    const aboutImage2File = files?.aboutImage2?.[0];
     const serviceBannerFile = files?.serviceBanner?.[0];
     const processBannerFile = files?.processBanner?.[0];
     const workBannerFile = files?.workBanner?.[0];
@@ -29,6 +31,8 @@ const createGlobalSettingController = async (
       logo: logoFile?.path,
       favicon: faviconFile?.path,
       aboutBanner: aboutBannerFile?.path,
+      aboutImage1: aboutImage1File?.path,
+      aboutImage2: aboutImage2File?.path,
       serviceBanner: serviceBannerFile?.path,
       workBanner: workBannerFile?.path,
       processBanner: processBannerFile?.path,
@@ -87,6 +91,8 @@ const updateSingleGlobalSettingController = async (
     const logoFilePath = files?.logo?.[0]?.path;
     const faviconFilePath = files?.favicon?.[0]?.path;
     const aboutBannerFile = files?.aboutBanner?.[0];
+    const aboutImage1File = files?.aboutImage1?.[0];
+    const aboutImage2File = files?.aboutImage2?.[0];
     const serviceBannerFile = files?.serviceBanner?.[0];
     const processBannerFile = files?.processBanner?.[0];
     const workBannerFile = files?.workBanner?.[0];
@@ -100,6 +106,8 @@ const updateSingleGlobalSettingController = async (
       logo: logoFilePath,
       favicon: faviconFilePath,
       aboutBanner: aboutBannerFile?.path,
+      aboutImage1: aboutImage1File?.path,
+      aboutImage2: aboutImage2File?.path,
       serviceBanner: serviceBannerFile?.path,
       workBanner: workBannerFile?.path,
       processBanner: processBannerFile?.path,

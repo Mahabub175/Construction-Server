@@ -18,6 +18,8 @@ export interface IGlobalSetting {
   logo: string;
   favicon: string;
   aboutBanner: string;
+  aboutImage1: string;
+  aboutImage2: string;
   serviceBanner: string;
   workBanner: string;
   processBanner: string;

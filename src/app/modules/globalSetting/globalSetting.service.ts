@@ -24,6 +24,8 @@ const getAllGlobalSettingService = async () => {
   results = formatResultImage(results, "logo");
   results = formatResultImage(results, "favicon");
   results = formatResultImage(results, "aboutBanner");
+  results = formatResultImage(results, "aboutImage1");
+  results = formatResultImage(results, "aboutImage2");
   results = formatResultImage(results, "serviceBanner");
   results = formatResultImage(results, "workBanner");
   results = formatResultImage(results, "galleryBanner");
@@ -61,6 +63,8 @@ const updateSingleGlobalSettingService = async (
     "logo",
     "favicon",
     "aboutBanner",
+    "aboutImage1",
+    "aboutImage2",
     "serviceBanner",
     "workBanner",
     "galleryBanner",
