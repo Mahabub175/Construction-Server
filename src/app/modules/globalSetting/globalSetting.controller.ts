@@ -4,7 +4,7 @@ import { globalSettingServices } from "./globalSetting.service";
 const createGlobalSettingController = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const data = req.body;
@@ -25,6 +25,9 @@ const createGlobalSettingController = async (
     const shopBannerFile = files?.shopBanner?.[0];
     const contactBannerFile = files?.contactBanner?.[0];
     const blogBannerFile = files?.blogBanner?.[0];
+    const whyUsImage1File = files?.whyUsImage1?.[0];
+    const whyUsImage2File = files?.whyUsImage2?.[0];
+    const homeShopImageFile = files?.homeShopImage?.[0];
 
     const formData = {
       ...data,
@@ -40,11 +43,13 @@ const createGlobalSettingController = async (
       shopBanner: shopBannerFile?.path,
       contactBanner: contactBannerFile?.path,
       blogBanner: blogBannerFile?.path,
+      whyUsImage1: whyUsImage1File?.path,
+      whyUsImage2: whyUsImage2File?.path,
+      homeShopImage: homeShopImageFile?.path,
     };
 
-    const result = await globalSettingServices.createGlobalSettingService(
-      formData
-    );
+    const result =
+      await globalSettingServices.createGlobalSettingService(formData);
 
     res.status(200).json({
       success: true,
@@ -59,7 +64,7 @@ const createGlobalSettingController = async (
 const getAllGlobalSettingController = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const result = await globalSettingServices.getAllGlobalSettingService();
@@ -78,7 +83,7 @@ const getAllGlobalSettingController = async (
 const updateSingleGlobalSettingController = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { globalSettingId } = req.params;
@@ -100,6 +105,9 @@ const updateSingleGlobalSettingController = async (
     const shopBannerFile = files?.shopBanner?.[0];
     const contactBannerFile = files?.contactBanner?.[0];
     const blogBannerFile = files?.blogBanner?.[0];
+    const whyUsImage1File = files?.whyUsImage1?.[0];
+    const whyUsImage2File = files?.whyUsImage2?.[0];
+    const homeShopImageFile = files?.homeShopImage?.[0];
 
     const globalSettingData = {
       ...data,
@@ -115,11 +123,14 @@ const updateSingleGlobalSettingController = async (
       shopBanner: shopBannerFile?.path,
       contactBanner: contactBannerFile?.path,
       blogBanner: blogBannerFile?.path,
+      whyUsImage1: whyUsImage1File?.path,
+      whyUsImage2: whyUsImage2File?.path,
+      homeShopImage: homeShopImageFile?.path,
     };
 
     const result = await globalSettingServices.updateSingleGlobalSettingService(
       globalSettingId,
-      globalSettingData
+      globalSettingData,
     );
 
     res.status(200).json({

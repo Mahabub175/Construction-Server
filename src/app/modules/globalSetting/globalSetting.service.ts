@@ -8,7 +8,7 @@ import fs from "fs";
 //Create a globalSetting into database
 const createGlobalSettingService = async (
   globalSettingData: IGlobalSetting,
-  filePath?: string
+  filePath?: string,
 ) => {
   const dataToSave = { ...globalSettingData, filePath };
   const result = await globalSettingModel.create(dataToSave);
@@ -33,6 +33,9 @@ const getAllGlobalSettingService = async () => {
   results = formatResultImage(results, "contactBanner");
   results = formatResultImage(results, "processBanner");
   results = formatResultImage(results, "blogBanner");
+  results = formatResultImage(results, "whyUsImage1");
+  results = formatResultImage(results, "whyUsImage2");
+  results = formatResultImage(results, "homeShopImage");
 
   return {
     result: results[0] || null,
@@ -42,7 +45,7 @@ const getAllGlobalSettingService = async () => {
 //Update single globalSetting
 const updateSingleGlobalSettingService = async (
   globalSettingId: string | number,
-  globalSettingData: IGlobalSetting
+  globalSettingData: IGlobalSetting,
 ) => {
   const queryId =
     typeof globalSettingId === "string"
@@ -72,6 +75,9 @@ const updateSingleGlobalSettingService = async (
     "contactBanner",
     "blogBanner",
     "processBanner",
+    "whyUsImage1",
+    "whyUsImage2",
+    "homeShopImage",
   ];
 
   imageFields.forEach((field) => {
@@ -102,7 +108,7 @@ const updateSingleGlobalSettingService = async (
     .findByIdAndUpdate(
       queryId,
       { $set: globalSettingData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     )
     .exec();
 

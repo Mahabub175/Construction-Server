@@ -36,4 +36,9 @@ export interface IGlobalSetting {
   currency: string;
   ssl: boolean;
   status: boolean;
+  whyUsImage1: string;
+  whyUsImage2: string;
+  homeShopImage: string;
+  aboutUsDetails1: string[];
+  aboutUsDetails2: string[];
 }

@@ -19,13 +19,16 @@ router.post(
     { name: "shopBanner", maxCount: 1 },
     { name: "contactBanner", maxCount: 1 },
     { name: "blogBanner", maxCount: 1 },
+    { name: "whyUsImage1", maxCount: 1 },
+    { name: "whyUsImage2", maxCount: 1 },
+    { name: "homeShopImage", maxCount: 1 },
   ]),
-  globalSettingControllers.createGlobalSettingController
+  globalSettingControllers.createGlobalSettingController,
 );
 
 router.get(
   "/global-setting/",
-  globalSettingControllers.getAllGlobalSettingController
+  globalSettingControllers.getAllGlobalSettingController,
 );
 
 router.patch(
@@ -43,8 +46,11 @@ router.patch(
     { name: "shopBanner", maxCount: 1 },
     { name: "contactBanner", maxCount: 1 },
     { name: "blogBanner", maxCount: 1 },
+    { name: "whyUsImage1", maxCount: 1 },
+    { name: "whyUsImage2", maxCount: 1 },
+    { name: "homeShopImage", maxCount: 1 },
   ]),
-  globalSettingControllers.updateSingleGlobalSettingController
+  globalSettingControllers.updateSingleGlobalSettingController,
 );
 
 export const globalSettingRoutes = router;

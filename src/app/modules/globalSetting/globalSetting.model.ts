@@ -105,11 +105,16 @@ const globalSettingSchema = new Schema<IGlobalSetting>(
       type: Boolean,
       default: true,
     },
+    whyUsImage1: { type: String, default: null, trim: true },
+    whyUsImage2: { type: String, default: null, trim: true },
+    homeShopImage: { type: String, default: null, trim: true },
+    aboutUsDetails1: [{ type: String, trim: true }],
+    aboutUsDetails2: [{ type: String, trim: true }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const globalSettingModel = model<IGlobalSetting>(
   "globalSetting",
-  globalSettingSchema
+  globalSettingSchema,
 );
