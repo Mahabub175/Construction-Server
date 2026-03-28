@@ -110,6 +110,9 @@ const globalSettingSchema = new Schema<IGlobalSetting>(
     homeShopImage: { type: String, default: null, trim: true },
     aboutUsDetails1: [{ type: String, trim: true }],
     aboutUsDetails2: [{ type: String, trim: true }],
+    homePageBanner1: { type: String, default: null, trim: true },
+    homePageBanner2: { type: String, default: null, trim: true },
+    homePageBanner3: { type: String, default: null, trim: true },
   },
   { timestamps: true },
 );
