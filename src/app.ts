@@ -13,23 +13,26 @@ const allowedOrigins: string[] = [
   "http://localhost:3000",
   "https://genesiscarpenter.vercel.app",
   "https://genesiscarpenter.com",
+  "https://www.genesiscarpenter.com",
 ];
 
 const corsOptions = {
   origin: (origin: any, callback: any) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin);
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      console.log("Blocked by CORS:", origin);
+      callback(null, false);
     }
   },
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
-
-app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

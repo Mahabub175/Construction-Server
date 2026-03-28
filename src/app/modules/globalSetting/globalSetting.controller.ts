@@ -1,6 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { globalSettingServices } from "./globalSetting.service";
+import { imageFields } from "./globalSetting.interface";
 
+const extractFilePaths = (files: any) => {
+  const fileData: Record<string, string | undefined> = {};
+
+  if (!files) return fileData;
+
+  imageFields.forEach((field) => {
+    fileData[field] = files?.[field]?.[0]?.path;
+  });
+
+  return fileData;
+};
+
+// CREATE
 const createGlobalSettingController = async (
   req: Request,
   res: Response,
@@ -8,44 +22,13 @@ const createGlobalSettingController = async (
 ) => {
   try {
     const data = req.body;
+    const files = req.files as Record<string, Express.Multer.File[]>;
 
-    const files = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
-
-    const logoFile = files?.logo?.[0];
-    const faviconFile = files?.favicon?.[0];
-    const aboutBannerFile = files?.aboutBanner?.[0];
-    const aboutImage1File = files?.aboutImage1?.[0];
-    const aboutImage2File = files?.aboutImage2?.[0];
-    const serviceBannerFile = files?.serviceBanner?.[0];
-    const processBannerFile = files?.processBanner?.[0];
-    const workBannerFile = files?.workBanner?.[0];
-    const galleryBannerFile = files?.galleryBanner?.[0];
-    const shopBannerFile = files?.shopBanner?.[0];
-    const contactBannerFile = files?.contactBanner?.[0];
-    const blogBannerFile = files?.blogBanner?.[0];
-    const whyUsImage1File = files?.whyUsImage1?.[0];
-    const whyUsImage2File = files?.whyUsImage2?.[0];
-    const homeShopImageFile = files?.homeShopImage?.[0];
+    const filePaths = extractFilePaths(files);
 
     const formData = {
       ...data,
-      logo: logoFile?.path,
-      favicon: faviconFile?.path,
-      aboutBanner: aboutBannerFile?.path,
-      aboutImage1: aboutImage1File?.path,
-      aboutImage2: aboutImage2File?.path,
-      serviceBanner: serviceBannerFile?.path,
-      workBanner: workBannerFile?.path,
-      processBanner: processBannerFile?.path,
-      galleryBanner: galleryBannerFile?.path,
-      shopBanner: shopBannerFile?.path,
-      contactBanner: contactBannerFile?.path,
-      blogBanner: blogBannerFile?.path,
-      whyUsImage1: whyUsImage1File?.path,
-      whyUsImage2: whyUsImage2File?.path,
-      homeShopImage: homeShopImageFile?.path,
+      ...filePaths,
     };
 
     const result =
@@ -56,11 +39,12 @@ const createGlobalSettingController = async (
       message: "Global Setting Created Successfully",
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 };
 
+// GET ALL
 const getAllGlobalSettingController = async (
   req: Request,
   res: Response,
@@ -79,7 +63,7 @@ const getAllGlobalSettingController = async (
   }
 };
 
-//Update single GlobalSetting controller
+// UPDATE
 const updateSingleGlobalSettingController = async (
   req: Request,
   res: Response,
@@ -89,43 +73,17 @@ const updateSingleGlobalSettingController = async (
     const { globalSettingId } = req.params;
     const data = req.body;
 
-    const files = req.files as {
-      [fieldname: string]: Express.Multer.File[];
-    };
+    const files = req.files as Record<string, Express.Multer.File[]>;
 
-    const logoFilePath = files?.logo?.[0]?.path;
-    const faviconFilePath = files?.favicon?.[0]?.path;
-    const aboutBannerFile = files?.aboutBanner?.[0];
-    const aboutImage1File = files?.aboutImage1?.[0];
-    const aboutImage2File = files?.aboutImage2?.[0];
-    const serviceBannerFile = files?.serviceBanner?.[0];
-    const processBannerFile = files?.processBanner?.[0];
-    const workBannerFile = files?.workBanner?.[0];
-    const galleryBannerFile = files?.galleryBanner?.[0];
-    const shopBannerFile = files?.shopBanner?.[0];
-    const contactBannerFile = files?.contactBanner?.[0];
-    const blogBannerFile = files?.blogBanner?.[0];
-    const whyUsImage1File = files?.whyUsImage1?.[0];
-    const whyUsImage2File = files?.whyUsImage2?.[0];
-    const homeShopImageFile = files?.homeShopImage?.[0];
+    const filePaths = extractFilePaths(files);
+
+    const cleanedFilePaths = Object.fromEntries(
+      Object.entries(filePaths).filter(([_, v]) => v !== undefined),
+    );
 
     const globalSettingData = {
       ...data,
-      logo: logoFilePath,
-      favicon: faviconFilePath,
-      aboutBanner: aboutBannerFile?.path,
-      aboutImage1: aboutImage1File?.path,
-      aboutImage2: aboutImage2File?.path,
-      serviceBanner: serviceBannerFile?.path,
-      workBanner: workBannerFile?.path,
-      processBanner: processBannerFile?.path,
-      galleryBanner: galleryBannerFile?.path,
-      shopBanner: shopBannerFile?.path,
-      contactBanner: contactBannerFile?.path,
-      blogBanner: blogBannerFile?.path,
-      whyUsImage1: whyUsImage1File?.path,
-      whyUsImage2: whyUsImage2File?.path,
-      homeShopImage: homeShopImageFile?.path,
+      ...cleanedFilePaths,
     };
 
     const result = await globalSettingServices.updateSingleGlobalSettingService(
@@ -138,7 +96,7 @@ const updateSingleGlobalSettingController = async (
       message: "Global Setting Data Updated Successfully!",
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 };

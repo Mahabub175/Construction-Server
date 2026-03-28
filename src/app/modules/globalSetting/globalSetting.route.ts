@@ -1,28 +1,18 @@
 import express from "express";
 import { uploadService } from "../upload/upload";
 import { globalSettingControllers } from "./globalSetting.controller";
+import { imageFields } from "./globalSetting.interface";
 
 const router = express.Router();
 
+const uploadFields = imageFields.map((field) => ({
+  name: field as string,
+  maxCount: 1,
+}));
+
 router.post(
   "/global-setting/",
-  uploadService.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "favicon", maxCount: 1 },
-    { name: "aboutBanner", maxCount: 1 },
-    { name: "aboutImage1", maxCount: 1 },
-    { name: "aboutImage2", maxCount: 1 },
-    { name: "serviceBanner", maxCount: 1 },
-    { name: "workBanner", maxCount: 1 },
-    { name: "galleryBanner", maxCount: 1 },
-    { name: "processBanner", maxCount: 1 },
-    { name: "shopBanner", maxCount: 1 },
-    { name: "contactBanner", maxCount: 1 },
-    { name: "blogBanner", maxCount: 1 },
-    { name: "whyUsImage1", maxCount: 1 },
-    { name: "whyUsImage2", maxCount: 1 },
-    { name: "homeShopImage", maxCount: 1 },
-  ]),
+  uploadService.fields(uploadFields),
   globalSettingControllers.createGlobalSettingController,
 );
 
@@ -33,23 +23,7 @@ router.get(
 
 router.patch(
   "/global-setting/:globalSettingId/",
-  uploadService.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "favicon", maxCount: 1 },
-    { name: "aboutBanner", maxCount: 1 },
-    { name: "aboutImage1", maxCount: 1 },
-    { name: "aboutImage2", maxCount: 1 },
-    { name: "serviceBanner", maxCount: 1 },
-    { name: "workBanner", maxCount: 1 },
-    { name: "processBanner", maxCount: 1 },
-    { name: "galleryBanner", maxCount: 1 },
-    { name: "shopBanner", maxCount: 1 },
-    { name: "contactBanner", maxCount: 1 },
-    { name: "blogBanner", maxCount: 1 },
-    { name: "whyUsImage1", maxCount: 1 },
-    { name: "whyUsImage2", maxCount: 1 },
-    { name: "homeShopImage", maxCount: 1 },
-  ]),
+  uploadService.fields(uploadFields),
   globalSettingControllers.updateSingleGlobalSettingController,
 );
 

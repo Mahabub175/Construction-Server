@@ -2,7 +2,7 @@ import config from "../config";
 
 export const formatResultImage = <T extends { [key: string]: any }>(
   results: T[] | string,
-  fieldName?: string
+  fieldName?: string,
 ): T[] | string => {
   const formatItem = (item: T, fieldName?: keyof T): T => {
     const docData = (item as any)._doc || item;
@@ -23,4 +23,21 @@ export const formatResultImage = <T extends { [key: string]: any }>(
   } else {
     throw new Error("Unexpected results format");
   }
+};
+
+export const formatResultImagesForGlobal = <T extends Record<string, any>>(
+  results: T[],
+  fieldName: keyof T,
+): T[] => {
+  return results.map((item) => {
+    const docData = (item as any)._doc || item;
+    const fieldData = docData[fieldName];
+
+    return {
+      ...docData,
+      [fieldName]: fieldData
+        ? `${config.base_url}/${String(fieldData).replace(/\\/g, "/")}`
+        : fieldData,
+    };
+  });
 };

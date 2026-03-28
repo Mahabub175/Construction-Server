@@ -42,3 +42,21 @@ export interface IGlobalSetting {
   aboutUsDetails1: string[];
   aboutUsDetails2: string[];
 }
+
+export const imageFields: (keyof IGlobalSetting)[] = [
+  "logo",
+  "favicon",
+  "aboutBanner",
+  "aboutImage1",
+  "aboutImage2",
+  "serviceBanner",
+  "workBanner",
+  "galleryBanner",
+  "shopBanner",
+  "contactBanner",
+  "blogBanner",
+  "processBanner",
+  "whyUsImage1",
+  "whyUsImage2",
+  "homeShopImage",
+];
