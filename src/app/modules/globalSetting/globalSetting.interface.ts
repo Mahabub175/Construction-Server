@@ -45,6 +45,7 @@ export interface IGlobalSetting {
   homePageBanner2: string;
   homePageBanner3: string;
   homePageBanner4: string;
+  servicePageImage: string;
 }
 
 export const imageFields: (keyof IGlobalSetting)[] = [
@@ -67,4 +68,5 @@ export const imageFields: (keyof IGlobalSetting)[] = [
   "homePageBanner2",
   "homePageBanner3",
   "homePageBanner4",
+  "servicePageImage",
 ];

@@ -114,6 +114,7 @@ const globalSettingSchema = new Schema<IGlobalSetting>(
     homePageBanner2: { type: String, default: null, trim: true },
     homePageBanner3: { type: String, default: null, trim: true },
     homePageBanner4: { type: String, default: null, trim: true },
+    servicePageImage: { type: String, default: null, trim: true },
   },
   { timestamps: true },
 );
