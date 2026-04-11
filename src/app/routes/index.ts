@@ -13,6 +13,7 @@ import { shopRoutes } from "../modules/shop/shop.route";
 import { dashboardRoutes } from "../modules/dashboard/dashboard.route";
 import { brandRoutes } from "../modules/brand/brand.route";
 import { stepRoutes } from "../modules/step/step.route";
+import { handymanRoutes } from "../modules/handyman/handyman.route";
 
 const router = Router();
 
@@ -30,6 +31,7 @@ const routes = [
   shopRoutes,
   dashboardRoutes,
   stepRoutes,
+  handymanRoutes,
 ];
 
 routes.forEach((route) => {
